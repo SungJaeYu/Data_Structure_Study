@@ -1,2 +1,2 @@
 # Data_Structure_Study
-Data Structure Study Repo
+Data Structure Study Repository
