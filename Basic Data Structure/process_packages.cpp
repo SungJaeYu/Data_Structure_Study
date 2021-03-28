@@ -30,8 +30,39 @@ public:
     {}
 
     Response Process(const Request &request) {
-        // write your code here
-    }
+		//Empty Queue -> Immediately Response
+		if(finish_time_.empty()){
+			finish_time_.push(request.arrival_time + request.process_time);
+			Response response(false, request.arrival_time);
+			return response;
+		}
+		
+		//Pop nodes(finished before arriving)
+		int top_time = finish_time_.front();
+		while(top_time <= request.arrival_time){
+			finish_time_.pop();
+			if(finish_time_.empty()) break;
+			top_time = finish_time_.front();
+		}
+		
+		//Buffer is Full, Dropped
+		if(finish_time_.size() >= size_){
+			Response dropped_response(true, 0);
+			return dropped_response;
+		}
+		
+		//Empty Queue -> Immediately Response
+		if(finish_time_.empty()){
+			finish_time_.push(request.arrival_time + request.process_time);
+			Response response(false, request.arrival_time);
+			return response;
+		}
+		
+		//Response = Last Node Finish Time + Request Node Process Time 
+		Response response(false, finish_time_.back());		
+		finish_time_.push(finish_time_.back() + request.process_time);
+		return response;
+	}
 private:
     int size_;
     std::queue <int> finish_time_;

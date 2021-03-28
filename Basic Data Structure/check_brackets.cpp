@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stack>
 #include <string>
-#include <filesystem>
 
 #define SUCCESS 0
 
