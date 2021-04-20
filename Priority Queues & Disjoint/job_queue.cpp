@@ -1,13 +1,13 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <queue>
 
 using std::vector;
 using std::cin;
 using std::cout;
 using std::swap;
-using std::pair;
-using std::make_pair;
+using std::priority_queue;
 
 class JobQueue {
  private:
@@ -30,50 +30,37 @@ class JobQueue {
     for(int i = 0; i < m; ++i)
       cin >> jobs_[i];
   }
+  struct FreeTime{
+	  long long time;
+	  int index;
+	  FreeTime(long long t, int i):time(t), index(i){}
+  };
+
+  struct cmp{
+	  bool operator()(FreeTime a, FreeTime b){
+		  if(a.time == b.time)
+			  return a.index > b.index;
+		  return a.time > b.time;
+	  }
+  };
 
   void AssignJobs() {
     assigned_workers_.resize(jobs_.size());
     start_times_.resize(jobs_.size());
-    vector< pair <int, long long> > next_free_time(num_workers_);
-	for (int i = 0; i < num_workers_; ++i) {
-		next_free_time[i] = make_pair(i, 0);
+	priority_queue<FreeTime, vector<FreeTime>, cmp > next_free_time;
+	for ( int i = 0; i < num_workers_; ++i){
+		next_free_time.push(FreeTime(0, i));
 	}
     for (int i = 0; i < jobs_.size(); ++i) {
       int duration = jobs_[i];
 	  //Extract Min(Priority Queue)
-	  start_times_[i] = next_free_time[0].second;
-	  assigned_workers_[i] = next_free_time[0].first;
-	  swap(next_free_time[0], next_free_time[num_workers_ - 1]);
-	  next_free_time.pop_back();
-	  SiftDown(next_free_time, 0);
+	  start_times_[i] = next_free_time.top().time;
+	  assigned_workers_[i] = next_free_time.top().index;
+	  next_free_time.pop();
       
-	  //Insert(next_free_time + duration
-      next_free_time.push_back(make_pair(assigned_workers_[i], start_times_[i] + duration));
-	  SiftUp(next_free_time, num_workers_ - 1);
+	  //Insert(next_free_time + duration)
+	  next_free_time.push(FreeTime(start_times_[i] + duration, assigned_workers_[i]));
     }
-  }
-
-  void SiftDown(vector < pair <int, long long> > &nft, int i){
-	  int maxIndex = i;
-	  int left = 2 * i + 1;
-	  int right = 2 * i + 2;
-	  if ( left < num_workers_ && nft[left].second < nft[maxIndex].second )
-		  maxIndex = left;
-	  if ( right < num_workers_ && nft[right].second < nft[maxIndex].second )
-		  maxIndex = right;
-	  if ( i != maxIndex ){
-		  swap(nft[i], nft[maxIndex]);
-		  SiftDown(nft, maxIndex);
-	  }
-  }
-
-  void SiftUp(vector < pair <int, long long> > &nft, int i){
-	  int parent = (i + 1)/2 - 1;
-	  while( i > 0 && nft[parent].second > nft[i].second){
-	       swap(nft[parent], nft[i]);
-		   i = parent;
-		   parent = (i + 1)/2 - 1;
-	  }
   }
 
  public:

@@ -36,7 +36,7 @@ int check_brackets(std::string text){
 		}
 
 		if (next == ')' || next == ']' || next == '}') {
-			if(opening_brackets_stack.empty()) return 0;
+			if(opening_brackets_stack.empty()) return position+1;
 			Bracket top = opening_brackets_stack.top();
 			if(top.Matchc(next)){
 				opening_brackets_stack.pop();
