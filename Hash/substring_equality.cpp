@@ -4,23 +4,28 @@ using namespace std;
 
 class Solver {
 	string s;
-	unsigned long long poly_hash_1(const string& s){
+	bool compare_hash(const string& a, const string& b){
 		unsigned long long m1 = 1000000007;
-		unsigned long long x = 823;
-		unsigned long long hash = 0;
-		for (int i = static_cast<int> (s.size()) - 1; i >= 0; --i)
-			hash = (((hash * x + s[i] ) % m1 ) + m1) % m1;
-
-		return hash;
-	}
-	unsigned long long poly_hash_2(const string& s){
 		unsigned long long m2 = 1000000009;
-		unsigned long long x = 823;
-		unsigned long long hash = 0;
-		for (int i = static_cast<int> (s.size()) - 1; i >= 0; --i)
-			hash = (((hash * x + s[i] ) % m2 ) + m2) % m2;
+		unsigned long long x = 263;
+		unsigned long long hash1_a = 0;
+		unsigned long long hash2_a = 0;
+		unsigned long long hash1_b = 0;
+		unsigned long long hash2_b = 0;
+		for (int i = static_cast<int> (a.size()) - 1; i >= 0; --i){
+			hash1_a = (hash1_a * x + a[i] ) % m1;
+			hash2_a = (hash2_a * x + a[i] ) % m2;
+		}
+		for (int i = static_cast<int> (b.size()) - 1; i >= 0; --i){
+			hash1_b = (hash1_b * x + b[i] ) % m1;
+			hash2_b = (hash2_b * x + b[i] ) % m2;
+		}
 
-		return hash;
+		if(hash1_a != hash1_b)
+			return false;
+		if(hash2_a != hash2_b)
+			return false;
+		return true;
 	}
 
 public:	
@@ -28,12 +33,7 @@ public:
 		// initialization, precalculation
 	}
 	bool ask(int a, int b, int l) {
-		if(poly_hash_1(s.substr(a, l)) != poly_hash_1(s.substr(b, l)))
-			return false;
-		if(poly_hash_2(s.substr(a, l)) != poly_hash_2(s.substr(b, l)))
-			return false;
-
-		return true;
+		return compare_hash(s.substr(a, l), s.substr(b, l));
 	}
 };
 

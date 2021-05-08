@@ -21,34 +21,34 @@ void print_occurrences(const std::vector<int>& output) {
     std::cout << "\n";
 }
 
-ull poly_hash(const string& s){
-	static const size_t multiplier = 31;
-	static const size_t prime = 1000000007;
-	ull hash = 0;
+long long poly_hash(const string& s){
+	long long multiplier = 263;
+	long long prime = 1000000007;
+	long long hash = 0;
 	for (int i = static_cast<int> (s.size()) - 1; i >= 0; --i)
 		hash = (((hash * multiplier + s[i] ) % prime)+ prime) % prime;
 	return hash;
 }
 
-void pre_compute_hash(ull hash_arr[], const string& t, size_t pattern_size){
-	static const size_t x = 31;
-	static const size_t p = 1000000007;
+void pre_compute_hash(long long hash_arr[], const string& t, size_t pattern_size){
+	long long x = 263;
+	long long p = 1000000007;
 	
 	size_t len = t.size() - pattern_size + 1;
 	string s = t.substr(len-1);
 	hash_arr[len-1] = poly_hash(s);
-	ull y = 1;
+	long long y = 1;
 	for(int i = 0; i < pattern_size; ++i)
-		y = (y * x) % p;
+		y = ((y * x) % p + p) % p;
 	for (int i = len - 2; i > -1; --i)
-		hash_arr[i] = ((x * hash_arr[i+1]) + t[i] - (y * t[i + pattern_size])) % p;
+		hash_arr[i] = ((((x * hash_arr[i+1]) + t[i] - (y * t[i + pattern_size])) % p) + p ) % p;
 }
 
 std::vector<int> get_occurrences(const Data& input) {
     const string& s = input.pattern, t = input.text;
 	std::vector<int> ans;
-	ull hash_arr[t.size() - s.size() + 1];
-	ull p_hash = poly_hash(s);
+	long long hash_arr[t.size() - s.size() + 1];
+	long long p_hash = poly_hash(s);
 	pre_compute_hash(hash_arr, t, s.size());
     for (size_t i = 0; i + s.size() <= t.size(); ++i){
 		if (p_hash != hash_arr[i])
