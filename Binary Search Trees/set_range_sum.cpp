@@ -159,13 +159,30 @@ void insert(int x) {
 
 void erase(int x) {                   
   // Implement erase yourself
-
+  Vertex* del_vertex = find(root, x);
+  if(del_vertex == NULL || del_vertex->key != x) return;
+  Vertex* left = del_vertex->left;
+  Vertex* right = del_vertex->right;
+  delete del_vertex;
+  if(right == NULL){
+	  root = left;
+	  if(left == NULL)
+		  return;
+	  root->parent = NULL;
+	  return;
+  }
+  right->left = left;
+  left->parent = right;
+  root = right;
+  root->parent = NULL;
+  update(root);
 }
 
 bool find(int x) {  
   // Implement find yourself
-
-  return false;
+  Vertex* result = find(root, x);
+  if(result == NULL || result->key != x) return false;
+  else return true;
 }
 
 long long sum(int from, int to) {
@@ -176,7 +193,8 @@ long long sum(int from, int to) {
   split(middle, to + 1, middle, right);
   long long ans = 0;
   // Complete the implementation of sum
-  
+  ans = middle->sum;
+  root = merge(left, merge(middle, right));
   return ans;  
 }
 

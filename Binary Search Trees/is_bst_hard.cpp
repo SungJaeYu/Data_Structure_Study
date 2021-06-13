@@ -16,21 +16,20 @@ struct Node {
   Node(int key_, int left_, int right_) : key(key_), left(left_), right(right_) {}
 };
 
-bool IsBinarySearchTree(const vector<Node>& tree, int index) {
-  // Implement correct algorithm here
-  static int prev_index = -1;
+bool isBST_recursive(const vector<Node>& tree, int index, int min, int max){
+	if (index == -1)
+		return 1;
+	if (tree[index].key < min || tree[index].key > max)
+		return 0;
+	return isBST_recursive(tree, tree[index].left, min, tree[index].key-1) && 
+		isBST_recursive(tree, tree[index].right, tree[index].key, max);
+}
 
-  if(index != -1)
-  {
-	  if(!IsBinarySearchTree(tree, tree[index].left))
-		  return false;
-	  if(prev_index != -1 && tree[index].key < tree[prev_index].key)
-		  return false;
-	  prev_index = index;
-
-	  return IsBinarySearchTree(tree, tree[index].right);
-  }
-  return true;
+bool IsBinarySearchTree(const vector<Node>& tree) {
+    // Implement correct algorithm here
+	if(tree.size() == 0)
+		return true;
+    return isBST_recursive(tree, 0, INT_MIN, INT_MAX);
 }
 
 int main() {
@@ -42,7 +41,7 @@ int main() {
     cin >> key >> left >> right;
     tree.push_back(Node(key, left, right));
   }
-  if (IsBinarySearchTree(tree, 0)) {
+  if (IsBinarySearchTree(tree)) {
     cout << "CORRECT" << endl;
   } else {
     cout << "INCORRECT" << endl;

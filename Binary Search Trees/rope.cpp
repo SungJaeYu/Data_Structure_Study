@@ -3,6 +3,7 @@
 #include <iostream>
 
 
+// Replace this code with a faster implementation
 class Rope {
 	std::string s;
 public:
@@ -10,9 +11,7 @@ public:
 	}
 
 	void process( int i, int j, int k ) {
-                // Replace this code with a faster implementation
-                std::string t = s.substr(0, i) + s.substr(j + 1);
-                s = t.substr(0, k) + s.substr(i, j - i + 1) + t.substr(k);
+		
 	}
 
 	std::string result() {
