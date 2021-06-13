@@ -1,6 +1,6 @@
 # Binary Search Tree
-1. Binary Tree Traversals [x]
-2. Is BST? [x]
-3. Is BST? (include same key situation) [x]
-4. Range Sum with Splay Tree [x]
-5. Rope Data Structure [ ]
+- [x] Binary Tree Traversals
+- [x] Is BST?
+- [x] Is BST? (include same key situation)
+- [x] Range Sum with Splay Tree
+- [ ] Rope Data Structure
