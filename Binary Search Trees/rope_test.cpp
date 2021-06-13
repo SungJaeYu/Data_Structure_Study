@@ -106,16 +106,16 @@ Vertex* find(Vertex*& root, int index) {
 }
 
 void split(Vertex* root, int index, Vertex*& left, Vertex*& right) {
-  left = find(root, index);
-  splay(root, left);
-  if(left == NULL){
-	  right = root;
+  right = find(root, index);
+  splay(root, right);
+  if(right == NULL){
+	  left = root;
 	  return;
   }
-  right = left->right;
-  left->right = NULL;
-  if ( right != NULL) {
-    right->parent = NULL;
+  left = right->left;
+  right->left = NULL;
+  if (left != NULL) {
+    left->parent = NULL;
   }
   update(left);
   update(right);
@@ -142,12 +142,8 @@ void insert(int index, char c) {
   Vertex* left = NULL;
   Vertex* right = NULL;
   Vertex* new_vertex = NULL;
+  split(root, index+1, left, right);
   new_vertex = new Vertex(c, 1, NULL, NULL, NULL);
-  if(index == 0){
-    root = merge(new_vertex, root);
-    return;
-  }
-  split(root, index, left, right);
   root = merge(merge(left, new_vertex), right);
 }
 
@@ -189,8 +185,9 @@ char pop(int index) {
 
 class Rope {
   std::string result_str;
+  std::string s;
 public:
-	Rope(std::string &s){
+	Rope(std::string &s) : s(s){
 		for(char &c : s){
 			push(c);
 		}
@@ -205,11 +202,20 @@ public:
 		for(int ind = 0; ind < len; ind++)
 			insert(k+ind, subs[ind]);
 	}
+
+  void process2(int i, int j, int k){
+      std::string t = s.substr(0, i) + s.substr(j + 1);
+      s = t.substr(0, k) + s.substr(i, j - i + 1) + t.substr(k);
+  }
   
   std::string result(){
     result_str.clear();
     result_recur(root);
     return result_str;
+  }
+
+  std::string result2(){
+    return s;
   }
 
 	void result_recur(Vertex* v) {
@@ -232,6 +238,12 @@ int main() {
     int i, j, k;
 		std::cin >> i >> j >> k;
 		rope.process(i, j, k);
+    std::string test = rope.result();
+    std::string test2 = rope.result2(); 
+    if(!test.compare(test2)){
+      std::cout << test << std::endl;
+      std::cout<< test2 << std::endl;
+    }
   }
 	std::cout << rope.result() << std::endl;
 }

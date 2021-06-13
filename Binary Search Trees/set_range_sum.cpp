@@ -1,7 +1,5 @@
 #include <cstdio>
 
-// Splay tree implementation
-
 // Vertex of a splay tree
 struct Vertex {
   int key;
@@ -157,33 +155,44 @@ void insert(int x) {
   root = merge(merge(left, new_vertex), right);
 }
 
+bool find(int x) {  
+  // Implement find yourself
+  Vertex* result = find(root, x);
+  if(result == NULL || result->key != x) return false;
+  return true;
+}
+
 void erase(int x) {                   
   // Implement erase yourself
   Vertex* del_vertex = find(root, x);
   if(del_vertex == NULL || del_vertex->key != x) return;
   Vertex* left = del_vertex->left;
   Vertex* right = del_vertex->right;
-  delete del_vertex;
   if(right == NULL){
 	  root = left;
-	  if(left == NULL)
-		  return;
-	  root->parent = NULL;
-	  return;
+    if(root)
+	    root->parent = NULL;
   }
-  right->left = left;
-  left->parent = right;
-  root = right;
-  root->parent = NULL;
-  update(root);
+  else if(left == NULL){
+    root = right;
+    if(root)
+      root->parent = NULL;
+  }
+  else{
+    left->parent = NULL;
+    root->left = NULL;
+    root = root->right;
+    root->parent = NULL;
+    bool temp = find(x);
+    root->left = left;
+    left->parent = root;
+  }
+  delete del_vertex;
+  if(root)
+    update(root);
 }
 
-bool find(int x) {  
-  // Implement find yourself
-  Vertex* result = find(root, x);
-  if(result == NULL || result->key != x) return false;
-  else return true;
-}
+
 
 long long sum(int from, int to) {
   Vertex* left = NULL;
@@ -193,7 +202,8 @@ long long sum(int from, int to) {
   split(middle, to + 1, middle, right);
   long long ans = 0;
   // Complete the implementation of sum
-  ans = middle->sum;
+  if(middle != NULL)
+    ans = middle->sum;
   root = merge(left, merge(middle, right));
   return ans;  
 }
@@ -223,6 +233,7 @@ int main(){
         int x;
         scanf("%d", &x);
         printf(find((x + last_sum_result) % MODULO) ? "Found\n" : "Not found\n");
+      
       } break;
       case 's' : {
         int l, r;

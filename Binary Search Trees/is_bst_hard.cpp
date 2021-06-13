@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <climits>
 
 using std::cin;
 using std::cout;
@@ -8,28 +9,27 @@ using std::endl;
 using std::vector;
 
 struct Node {
-  int key;
+  long long key;
   int left;
   int right;
 
   Node() : key(0), left(-1), right(-1) {}
-  Node(int key_, int left_, int right_) : key(key_), left(left_), right(right_) {}
+  Node(long long key_, int left_, int right_) : key(key_), left(left_), right(right_) {}
 };
 
-bool isBST_recursive(const vector<Node>& tree, int index, int min, int max){
+bool isBST_recursive(const vector<Node>& tree, int index, long long min, long long max){
 	if (index == -1)
-		return 1;
+		return true;
 	if (tree[index].key < min || tree[index].key > max)
-		return 0;
+		return false;
 	return isBST_recursive(tree, tree[index].left, min, tree[index].key-1) && 
 		isBST_recursive(tree, tree[index].right, tree[index].key, max);
 }
 
 bool IsBinarySearchTree(const vector<Node>& tree) {
-    // Implement correct algorithm here
-	if(tree.size() == 0)
-		return true;
-    return isBST_recursive(tree, 0, INT_MIN, INT_MAX);
+	  if(tree.size() <= 1)
+		  return true;
+    return isBST_recursive(tree, 0, LLONG_MIN, LLONG_MAX);
 }
 
 int main() {
